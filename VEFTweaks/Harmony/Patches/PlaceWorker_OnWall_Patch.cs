@@ -27,7 +27,7 @@ public static class PlaceWorker_OnWall_Patch
         //Log.Warning($"Checking placement... setting is enabled: {VEFTWeaks_Mod.settings.VEFTweaks_EnablePlaceOnWallTweaks}, Building is doublesided: {checkingDef.GetModExtension<PlaceableOnWallDefExtension>() is { IsDoubleSided: true }}");
 
         // no applying if the setting is not enabled
-        if (!VEFTweaks_Mod.settings.VEFTweaks_EnablePlaceOnWallTweaks) return;
+        if (!VEFTweaks_Mod.Settings.VEFTweaks_EnablePlaceOnWallTweaks) return;
 
         // no need to apply if the result is already false
         if (!__result) return;
@@ -36,10 +36,10 @@ public static class PlaceWorker_OnWall_Patch
 
         if (isDoubleSided)
         {
-            IntVec3 facingCellOpposite = loc + rot.Opposite.FacingCell;
+            var facingCellOpposite = loc + rot.Opposite.FacingCell;
             if (facingCellOpposite.InBounds(map))
             {
-                Building edifice = facingCellOpposite.GetEdifice(map);
+                var edifice = facingCellOpposite.GetEdifice(map);
                 if (edifice != null && (edifice.def.defName.ToLower().Contains("wall") || edifice.def.IsSmoothed))
                 {
                     __result = false;
@@ -48,7 +48,7 @@ public static class PlaceWorker_OnWall_Patch
             }
         }
 
-        if (loc.GetThingList(map) is List<Thing> { Count: > 0 } existingThings) {
+        if (loc.GetThingList(map) is { Count: > 0 } existingThings) {
             foreach (var existingStuff in existingThings)
             {
                 if (
