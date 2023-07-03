@@ -3,11 +3,11 @@ using Verse;
 
 namespace VEFTweaks
 {
-    public class VEFTWeaks_Mod : Mod
+    public class VEFTweaks_Mod : Mod
     {
         public static VEFTweaks_ModSettings settings;
 
-        public VEFTWeaks_Mod(ModContentPack content) : base(content)
+        public VEFTweaks_Mod(ModContentPack content) : base(content)
         {
             settings = GetSettings<VEFTweaks_ModSettings>();
         }

@@ -27,12 +27,12 @@ public static class PlaceWorker_OnWall_Patch
         //Log.Warning($"Checking placement... setting is enabled: {VEFTWeaks_Mod.settings.VEFTweaks_EnablePlaceOnWallTweaks}, Building is doublesided: {checkingDef.GetModExtension<PlaceableOnWallDefExtension>() is { IsDoubleSided: true }}");
 
         // no applying if the setting is not enabled
-        if (!VEFTWeaks_Mod.settings.VEFTweaks_EnablePlaceOnWallTweaks) return;
+        if (!VEFTweaks_Mod.settings.VEFTweaks_EnablePlaceOnWallTweaks) return;
 
         // no need to apply if the result is already false
         if (!__result) return;
 
-        bool isDoubleSided = checkingDef.GetModExtension<PlaceableOnWallDefExtension>() is { IsDoubleSided: true };
+        var isDoubleSided = checkingDef.GetModExtension<PlaceableOnWallDefExtension>() is { IsDoubleSided: true };
 
         if (isDoubleSided)
         {
