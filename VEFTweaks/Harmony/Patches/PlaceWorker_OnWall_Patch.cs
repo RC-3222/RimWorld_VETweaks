@@ -10,14 +10,14 @@ namespace VEFTweaks.Harmony;
 [HarmonyPatch(nameof(PlaceWorker_OnWall.AllowsPlacing))]
 public static class PlaceWorker_OnWall_Patch
 {
-    private static bool IsValidRotation(bool isDoubleSided, Building building, Rot4 rot)
+    private static bool IsValidRotation(bool isDoubleSided, Building existingBuilding, Rot4 rot)
     {
-        if (building.def.GetModExtension<PlaceableOnWallDefExtension>() is { IsDoubleSided:true })
+        if (existingBuilding.def.GetModExtension<PlaceableOnWallDefExtension>() is { IsDoubleSided:true })
         {
-            return building.Rotation != rot && building.Rotation.Opposite != rot;
+            return existingBuilding.Rotation != rot && existingBuilding.Rotation.Opposite != rot;
         }
 
-        return isDoubleSided ? building.Rotation != rot && building.Rotation != rot.Opposite : building.Rotation != rot;
+        return isDoubleSided ? existingBuilding.Rotation != rot && existingBuilding.Rotation != rot.Opposite : existingBuilding.Rotation != rot;
     }
 
     // Should think about making this into transpiler
@@ -49,12 +49,12 @@ public static class PlaceWorker_OnWall_Patch
         }
 
         if (loc.GetThingList(map) is { Count: > 0 } existingThings) {
-            foreach (var existingStuff in existingThings)
+            foreach (var existingThing in existingThings)
             {
                 if (
-                    existingStuff is Building { def.placeWorkers: not null } building
-                    && building.def.placeWorkers.Contains(typeof(PlaceWorker_OnWall))
-                    && !IsValidRotation(isDoubleSided, building, rot)
+                    existingThing is Building { def.placeWorkers: not null } existingBuilding
+                    && existingBuilding.def.placeWorkers.Contains(typeof(PlaceWorker_OnWall))
+                    && !IsValidRotation(isDoubleSided, existingBuilding, rot)
                     )
                 {
                     __result = false;
