@@ -1,11 +1,12 @@
 ﻿using HarmonyLib;
-using System.Collections.Generic;
 using VanillaFurnitureExpanded;
 using VEFTweaks.DefModExtensions;
 using Verse;
 
 namespace VEFTweaks.Harmony;
 
+
+// TODO: Think about making this into transpiler...
 [HarmonyPatch(typeof(PlaceWorker_OnWall))]
 [HarmonyPatch(nameof(PlaceWorker_OnWall.AllowsPlacing))]
 public static class PlaceWorker_OnWall_Patch
@@ -20,16 +21,13 @@ public static class PlaceWorker_OnWall_Patch
         return isDoubleSided ? existingBuilding.Rotation != rot && existingBuilding.Rotation != rot.Opposite : existingBuilding.Rotation != rot;
     }
 
-    // Should think about making this into transpiler
     [HarmonyPostfix]
     public static void AllowPlacing_Postfix(ref BuildableDef checkingDef, ref IntVec3 loc, ref Rot4 rot, ref Map map, ref AcceptanceReport __result)
     {
-        //Log.Warning($"Checking placement... setting is enabled: {VEFTWeaks_Mod.settings.VEFTweaks_EnablePlaceOnWallTweaks}, Building is doublesided: {checkingDef.GetModExtension<PlaceableOnWallDefExtension>() is { IsDoubleSided: true }}");
-
-        // no applying if the setting is not enabled
+        // no applying if the corresponding setting is not enabled
         if (!VEFTweaks_Mod.Settings.VEFTweaks_EnablePlaceOnWallTweaks) return;
 
-        // no need to apply if the result is already false
+        // no need to apply if the result is already falsy (i.e. construction is already not allowed)
         if (!__result) return;
 
         var isDoubleSided = checkingDef.GetModExtension<PlaceableOnWallDefExtension>() is { IsDoubleSided: true };
@@ -42,7 +40,7 @@ public static class PlaceWorker_OnWall_Patch
                 var edifice = facingCellOpposite.GetEdifice(map);
                 if (edifice != null && (edifice.def.defName.ToLower().Contains("wall") || edifice.def.IsSmoothed))
                 {
-                    __result = false;
+                    __result = "VEFTweaks_PlaceWorker_OnWall_NoSameCellAndSameDirection".Translate();
                     return;
                 }
             }
@@ -57,7 +55,7 @@ public static class PlaceWorker_OnWall_Patch
                     && !IsValidRotation(isDoubleSided, existingBuilding, rot)
                     )
                 {
-                    __result = false;
+                    __result = "VEFTweaks_PlaceWorker_OnWall_NoSameCellAndSameDirection".Translate();
                     return;
                 }
             }
